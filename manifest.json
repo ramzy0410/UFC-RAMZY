@@ -1,0 +1,9 @@
+{
+  "name": "LIC1-ENG-TECH Ramzy UFC",
+  "short_name": "UFC Ramzy",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#eef4ff",
+  "theme_color": "#2563eb",
+  "icons": [{"src": "https://cdn-icons-png.flaticon.com/512/2232/2232688.png","sizes": "512x512","type": "image/png"}]
+}

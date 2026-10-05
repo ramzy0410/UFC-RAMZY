@@ -1,0 +1,1252 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ramzy UFC</title>
+<style>
+*{box-sizing:border-box;font-family:system-ui}
+body{margin:0;padding-bottom:90px;min-height:100vh;
+background: linear-gradient(rgba(230,240,255,0.88), rgba(230,240,255,0.92)), url('bg.jpg');
+background-size:cover;background-position:center top;background-attachment:fixed;
+transition:0.3s}
+.header{background:rgba(122,168,255,0.92);backdrop-filter:blur(8px);margin:12px;border-radius:20px;padding:12px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 15px #0002}
+.lang{background:white;border:0;padding:6px 12px;border-radius:20px;font-weight:700;cursor:pointer}
+.avatar{background:#1e4fd8;color:white;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:700;cursor:pointer;border:2px solid white}
+.card{background:rgba(255,255,255,0.93);backdrop-filter:blur(6px);margin:12px;border-radius:18px;padding:16px;box-shadow:0 4px 15px #0002}
+.progress-ring{width:70px;height:70px;border-radius:50%;border:6px solid #dbe6ff;border-top:6px solid #1e4fd8;display:grid;place-items:center;font-weight:700;color:#1e4fd8;background:white}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 12px}
+.mod{background:rgba(255,255,255,0.95);border-radius:16px;padding:12px;border:1px solid #dbe6ff;cursor:pointer;box-shadow:0 4px 12px #0001}
+.icon{width:42px;height:42px;background:#e6f0ff;border-radius:50%;display:grid;place-items:center;font-size:20px;float:left;margin-right:10px}
+.bar{height:8px;background:#dbe6ff;border-radius:10px;margin-top:10px;overflow:hidden;clear:both}.bar div{height:100%;background:#1e4fd8}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.97);backdrop-filter:blur(10px);display:flex;justify-content:space-around;padding:10px 0;border-radius:20px 20px 0 0;box-shadow:0 -2px 15px #0002}
+.bottom button{border:0;background:none;color:#888;font-size:12px;cursor:pointer}.bottom button.active{color:#1e4fd8;font-weight:700}
+.page{display:none}.page.active{display:block}
+.rtl{direction:rtl}
+.welcome{background:linear-gradient(135deg,rgba(30,79,216,0.9),rgba(90,140,255,0.8)),url('bg.jpg');background-size:cover;background-position:center;border-radius:18px;padding:20px;color:white;margin:12px;text-align:center;box-shadow:0 6px 20px #0003}
+.welcome h2{margin:0;font-family:serif;letter-spacing:1px}
+</style></head><body>
+
+<div class="header">
+<div><b id="t-title">LIC1-ANG-TEC - Ramzy UFC</b><br><small id="t-sub">جامعة التكوين المتواصل - غليزان</small></div>
+<div style="display:flex;gap:8px;align-items:center">
+<button class="lang" onclick="toggleLang()" id="langBtn">العربية</button>
+<div class="avatar" onclick="showPage('profile')">R</div>
+</div>
+</div>
+
+<div id="home" class="page active">
+<div class="welcome">
+<h2 id="t-welcome">جامعة التكوين المتواصل</h2>
+<p id="t-center">مركز غليزان - Lic1-Eng-Tech</p>
+<small>Small steps make big dreams ✨</small>
+</div>
+
+<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div><b id="t-progress">Your Learning Progress</b><br><small id="t-progress2">42% Complete</small><div class="bar" style="width:180px"><div style="width:42%"></div></div></div><div class="progress-ring">42%</div></div>
+
+<h3 style="padding:0 14px"><span id="t-modules">Learning Modules</span></h3>
+<div class="grid" id="grid"></div>
+</div>
+
+<div id="progressPage" class="page"><div class="card"><h3 id="t-pTitle">📊 Progress</h3><div id="progressList"></div></div></div>
+<div id="library" class="page"><div class="card"><h3 id="t-lTitle">📚 Library</h3><div id="libraryList"></div></div></div>
+<div id="profile" class="page"><div class="card" style="text-align:center">
+<img src="ramzy.jpg" style="width:80px;height:80px;border-radius:50%;border:3px solid #1e4fd8">
+<h3>Ramzy</h3><p>LEARN • GROW • SUCCEED</p>
+<button onclick="goAdmin()" style="background:#1e4fd8;color:white;padding:12px;width:100%;border-radius:10px;border:0;font-weight:700" id="t-admin">⚙️ إدارة الدروس</button>
+<button onclick="showPage('home')" style="background:#eee;padding:10px;width:100%;border-radius:10px;border:0;margin-top:8px" id="t-homeBtn">🏠 الرئيسية</button>
+</div></div>
+
+<div class="bottom">
+<button class="active" onclick="showPage('home')" id="b-home">🏠<br><span class="bn">Home</span></button>
+<button onclick="showPage('progressPage')" id="b-progress">📊<br><span class="bn">Progress</span></button>
+<button onclick="showPage('library')" id="b-library">📚<br><span class="bn">Library</span></button>
+<button onclick="showPage('profile')" id="b-profile">👤<br><span class="bn">Profile</span></button>
+</div>
+
+<script>
+let lang=localStorage.getItem('ufc_lang')||'en';
+const i18n={
+en:{title:"LIC1-ANG-TEC - Ramzy UFC",sub:"Centre Ghilizane",welcome:"Continuing Education University",center:"Ghilizane Center - Lic1-Eng-Tech",progress:"Your Learning Progress",progress2:"42% Complete • 4 of 10 Done",modules:"Learning Modules",pTitle:"📊 Progress",lTitle:"📚 Library",admin:"⚙️ Manage Lessons",homeBtn:"🏠 Back to Home",home:"Home",prog:"Progress",lib:"Library",prof:"Profile",btn:"العربية",enter:"Enter"},
+ar:{title:"جامعة التكوين المتواصل",sub:"مركز غليزان - رمزي",welcome:"جامعة التكوين المتواصل",center:"مركز غليزان - إنجليزية تقنية",progress:"تقدمك في التعلم",progress2:"42% مكتمل • 4 من 10",modules:"المقاييس الدراسية",pTitle:"📊 التقدم",lTitle:"📚 المكتبة",admin:"⚙️ إدارة الدروس",homeBtn:"🏠 الرجوع للرئيسية",home:"الرئيسية",prog:"التقدم",lib:"المكتبة",prof:"حسابي",btn:"English",enter:"دخول"}
+};
+const mods=[
+{id:"M01",en:{n:"Comprehension Oral",s:"Listening"},ar:{n:"فهم شفوي",s:"استماع"},p:60,icon:"🎤"},
+{id:"M02",en:{n:"Written Expression",s:"Writing"},ar:{n:"تعبير كتابي",s:"كتابة"},p:40,icon:"✍️"},
+{id:"M03",en:{n:"Phonetics",s:"Pronunciation"},ar:{n:"صوتيات",s:"نطق"},p:80,icon:"🎧"},
+{id:"M04",en:{n:"Culture Civilization",s:"Culture"},ar:{n:"ثقافة وحضارة",s:"ثقافة"},p:25,icon:"🌍"},
+{id:"M05",en:{n:"Grammar",s:"Grammar"},ar:{n:"قواعد",s:"قواعد"},p:50,icon:"📖"},
+{id:"M06",en:{n:"Literary Text",s:"Analysis"},ar:{n:"نص أدبي",s:"تحليل"},p:30,icon:"📚"},
+{id:"M07",en:{n:"Linguistics",s:"Language"},ar:{n:"لسانيات",s:"لغة"},p:20,icon:"🧠"},
+{id:"M08",en:{n:"Social Sciences",s:"Society"},ar:{n:"علوم اجتماعية",s:"مجتمع"},p:15,icon:"👥"},
+{id:"M09",en:{n:"University Techniques",s:"Methods"},ar:{n:"منهجية",s:"منهجية"},p:70,icon:"🎓"},
+{id:"M10",en:{n:"History of Algeria",s:"History"},ar:{n:"تاريخ الجزائر",s:"تاريخ"},p:10,icon:"🏛️"}
+];
+function applyLang(){
+ let t=i18n[lang];
+ document.getElementById('t-title').innerText=t.title; document.getElementById('t-sub').innerText=t.sub;
+ document.getElementById('t-welcome').innerText=t.welcome; document.getElementById('t-center').innerText=t.center;
+ document.getElementById('t-progress').innerText=t.progress; document.getElementById('t-progress2').innerText=t.progress2;
+ document.getElementById('t-modules').innerText=t.modules; document.getElementById('t-pTitle').innerText=t.pTitle;
+ document.getElementById('t-lTitle').innerText=t.lTitle; document.getElementById('t-admin').innerText=t.admin;
+ document.getElementById('t-homeBtn').innerText=t.homeBtn; document.getElementById('langBtn').innerText=t.btn;
+ document.querySelectorAll('.bn')[0].innerText=t.home; document.querySelectorAll('.bn')[1].innerText=t.prog;
+ document.querySelectorAll('.bn')[2].innerText=t.lib; document.querySelectorAll('.bn')[3].innerText=t.prof;
+ document.body.classList.toggle('rtl',lang==='ar'); renderMods(); renderLists(); localStorage.setItem('ufc_lang',lang);
+}
+function renderMods(){
+ document.getElementById('grid').innerHTML=mods.map(m=>`<div class="mod" onclick="openLesson('${m.id}')"><div class="icon">${m.icon}</div><div><b>${m[lang].n}</b><br><small>${m[lang].s}</small></div><div class="bar"><div style="width:${m.p}%"></div></div><small style="float:right;color:#1e4fd8">${m.p}%</small><div style="clear:both"></div><small style="color:#1e4fd8">${i18n[lang].enter} →</small></div>`).join('');
+}
+function renderLists(){
+ let d=JSON.parse(localStorage.getItem('ufc_data')||'{"modules":[]}'); let h='';
+ d.modules.forEach(mod=>{ mod.lessons.forEach(l=>{let title=l['title_'+lang]||l.title||'';let content=l['content_'+lang]||l.content||'';h+=`<div style="background:#f0f5ff;padding:10px;border-radius:10px;margin:6px 0"><b>${mod.id}: ${title}</b><br><small>${content.slice(0,80)}...</small></div>`;});});
+ document.getElementById('libraryList').innerHTML=h||'فارغ'; document.getElementById('progressList').innerHTML=h||'فارغ';
+}
+function toggleLang(){lang=lang==='en'?'ar':'en';applyLang();}
+function showPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(name).classList.add('active');document.querySelectorAll('.bottom button').forEach(b=>b.classList.remove('active'));document.getElementById('b-'+(name==='progressPage'?'progress':name)).classList.add('active');if(name!=='home')renderLists();}
+function openLesson(id){let base=window.location.href.substring(0, window.location.href.lastIndexOf('/')+1);window.location.href=base+'lesson.html?id='+id+'&lang='+lang;}
+function goAdmin(){let base=window.location.href.substring(0, window.location.href.lastIndexOf('/')+1);window.location.href=base+'admin.html';}
+applyLang();
+</script></body></html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>UFC Study — Admin</title>
+
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    margin:0;
+    padding:0;
+    background:#f0f3ff;
+    color:#172033;
+}
+
+.header{
+    background:linear-gradient(135deg,#1e4fd8,#7aa8ff);
+    color:white;
+    padding:16px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border-radius:0 0 20px 20px;
+}
+
+.header img{
+    width:72px;
+    height:72px;
+    border-radius:50%;
+    border:3px solid white;
+    object-fit:cover;
+    box-shadow:0 3px 10px #0003;
+}
+
+.signature{
+    font-family:'Great Vibes',cursive;
+    font-size:28px;
+    margin-top:4px;
+    opacity:.95;
+}
+
+.header-home{
+    margin-left:auto;
+}
+
+.home-btn{
+    background:white;
+    color:#1e4fd8;
+    border:0;
+    padding:8px 14px;
+    border-radius:20px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.card{
+    background:white;
+    padding:14px;
+    border-radius:16px;
+    margin:12px;
+    box-shadow:0 2px 12px #0001;
+}
+
+input,
+textarea,
+select{
+    width:100%;
+    padding:11px;
+    margin:6px 0;
+    border-radius:10px;
+    border:1px solid #ccd6f0;
+    font-size:14px;
+    font-family:inherit;
+    outline:none;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+    border-color:#1e4fd8;
+    box-shadow:0 0 0 2px #1e4fd822;
+}
+
+textarea{
+    resize:vertical;
+    min-height:120px;
+}
+
+.tab{
+    display:flex;
+    gap:6px;
+    margin:8px 0;
+}
+
+.tab button{
+    flex:1;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #1e4fd8;
+    background:white;
+    color:#1e4fd8;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.tab button.active{
+    background:#1e4fd8;
+    color:white;
+}
+
+.tools{
+    display:flex;
+    gap:4px;
+    flex-wrap:wrap;
+    margin-bottom:4px;
+}
+
+.btn{
+    padding:7px 11px;
+    border:0;
+    border-radius:8px;
+    color:white;
+    font-size:12px;
+    margin:2px;
+    cursor:pointer;
+}
+
+.btn:hover,
+.home-btn:hover{
+    opacity:.9;
+}
+
+.upload{
+    border:2px dashed #1e4fd8;
+    background:#eef4ff;
+    text-align:center;
+    padding:14px;
+    border-radius:14px;
+}
+
+.primary-btn{
+    background:#1e4fd8;
+    width:100%;
+    padding:14px;
+    border-radius:12px;
+    color:white;
+    border:0;
+    margin-top:12px;
+    font-weight:700;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.export-btn{
+    background:#0a7;
+    width:100%;
+    padding:10px;
+    border-radius:10px;
+    color:white;
+    border:0;
+    margin-top:8px;
+    cursor:pointer;
+}
+
+.cancel-btn{
+    display:none;
+    background:#777;
+    width:100%;
+    padding:10px;
+    border-radius:10px;
+    color:white;
+    border:0;
+    margin-top:8px;
+    cursor:pointer;
+}
+
+.lesson{
+    background:#f0f5ff;
+    padding:10px;
+    border-radius:10px;
+    margin:6px 0;
+    border-left:4px solid #1e4fd8;
+}
+
+.lesson-title-en{
+    font-weight:700;
+}
+
+.lesson-title-ar{
+    color:#1e4fd8;
+    direction:rtl;
+    margin-top:3px;
+}
+
+.lesson-actions{
+    margin-top:7px;
+}
+
+.empty{
+    color:#777;
+    text-align:center;
+    padding:15px;
+}
+
+.status{
+    padding:10px;
+    border-radius:10px;
+    margin-top:8px;
+    display:none;
+    font-size:13px;
+}
+
+.status.success{
+    display:block;
+    background:#e9fff3;
+    color:#08743c;
+}
+
+.status.error{
+    display:block;
+    background:#fff0f0;
+    color:#a00000;
+}
+
+.status.info{
+    display:block;
+    background:#eef4ff;
+    color:#1e4fd8;
+}
+
+label{
+    font-weight:700;
+    display:block;
+    margin-top:6px;
+}
+
+small{
+    line-height:1.5;
+}
+
+@media(max-width:600px){
+    .header{
+        padding:12px;
+        gap:10px;
+    }
+
+    .header img{
+        width:58px;
+        height:58px;
+    }
+
+    .signature{
+        font-size:24px;
+    }
+
+    .header small{
+        font-size:11px;
+    }
+
+    .home-btn{
+        padding:7px 10px;
+        font-size:12px;
+    }
+
+    .card{
+        margin:9px;
+        padding:12px;
+    }
+}
+</style>
+</>
+
+<body>
+
+<div class="header">
+
+    <img
+        src="ramzy.jpg"
+        alt="Ramzy"
+        onerror="this.src='https://i.pravatar.cc/100';"
+    >
+
+    <div>
+        <b>Admin. Ali Ramzy UFC</b><br>
+        <small>LIC1-ENG-TECH • Wisdom & Knowledge</small>
+        <div class="signature">Ramzy</div>
+    </div>
+
+    <div class="header-home">
+        <button class="home-btn" onclick="goHome()">
+            🏠 Home
+        </button>
+    </div>
+
+</div>
+
+
+<div class="card upload">
+
+    <b>📄 رفع ملف Word</b><br>
+
+    <small>
+        يمكن استعمال الملف لإدخال عنوان ومحتوى الدرس تلقائياً.
+    </small>
+
+    <br><br>
+
+    <input
+        id="docxFile"
+        type="file"
+        accept=".docx"
+        onchange="readDocx(this)"
+    >
+
+    <div id="status" class="status"></div>
+
+</div>
+
+
+<div class="card">
+
+    <label for="module">
+        المقياس
+    </label>
+
+    <select id="module"></select>
+
+
+    <div class="tab">
+
+        <button
+            id="tabEN"
+            class="active"
+            onclick="switchTab('en')"
+        >
+            🇬🇧 English Content
+        </button>
+
+        <button
+            id="tabAR"
+            onclick="switchTab('ar')"
+        >
+            🇩🇿 محتوى عربي
+        </button>
+
+    </div>
+
+
+    <!-- English -->
+
+    <div id="boxEN">
+
+        <label for="title_en">
+            Title EN
+        </label>
+
+        <div class="tools">
+
+            <button
+                class="btn"
+                style="background:#1e4fd8"
+                onclick="pasteTo('title_en')"
+            >
+                📋 لصق
+            </button>
+
+            <button
+                class="btn"
+                style="background:#555"
+                onclick="copyFrom('title_en')"
+            >
+                📄 نسخ
+            </button>
+
+            <button
+                class="btn"
+                style="background:#c00"
+                onclick="cutFrom('title_en')"
+            >
+                ✂️ قص
+            </button>
+
+        </div>
+
+        <input
+            id="title_en"
+            placeholder="Lesson title in English"
+            dir="ltr"
+        >
+
+
+        <label for="content_en">
+            Content EN
+        </label>
+
+        <div class="tools">
+
+            <button
+                class="btn"
+                style="background:#1e4fd8"
+                onclick="pasteTo('content_en')"
+            >
+                📋 لصق
+            </button>
+
+            <button
+                class="btn"
+                style="background:#555"
+                onclick="copyFrom('content_en')"
+            >
+                📄 نسخ
+            </button>
+
+            <button
+                class="btn"
+                style="background:#c00"
+                onclick="cutFrom('content_en')"
+            >
+                ✂️ قص
+            </button>
+
+            <button
+                class="btn"
+                style="background:#0a7"
+                onclick="autoSplit('en')"
+            >
+                ✨ تقسيم
+            </button>
+
+        </div>
+
+        <textarea
+            id="content_en"
+            rows="6"
+            placeholder="Paste English lesson here"
+            dir="ltr"
+        ></textarea>
+
+    </div>
+
+
+    <!-- Arabic -->
+
+    <div
+        id="boxAR"
+        style="display:none"
+    >
+
+        <label for="title_ar">
+            العنوان AR
+        </label>
+
+        <div class="tools">
+
+            <button
+                class="btn"
+                style="background:#1e4fd8"
+                onclick="pasteTo('title_ar')"
+            >
+                📋 لصق
+            </button>
+
+            <button
+                class="btn"
+                style="background:#555"
+                onclick="copyFrom('title_ar')"
+            >
+                📄 نسخ
+            </button>
+
+            <button
+                class="btn"
+                style="background:#c00"
+                onclick="cutFrom('title_ar')"
+            >
+                ✂️ قص
+            </button>
+
+        </div>
+
+        <input
+            id="title_ar"
+            placeholder="عنوان الدرس بالعربية"
+            dir="rtl"
+        >
+
+
+        <label for="content_ar">
+            المحتوى AR
+        </label>
+
+        <div class="tools">
+
+            <button
+                class="btn"
+                style="background:#1e4fd8"
+                onclick="pasteTo('content_ar')"
+            >
+                📋 لصق
+            </button>
+
+            <button
+                class="btn"
+                style="background:#555"
+                onclick="copyFrom('content_ar')"
+            >
+                📄 نسخ
+            </button>
+
+            <button
+                class="btn"
+                style="background:#c00"
+                onclick="cutFrom('content_ar')"
+            >
+                ✂️ قص
+            </button>
+
+            <button
+                class="btn"
+                style="background:#0a7"
+                onclick="autoSplit('ar')"
+            >
+                ✨ تقسيم
+            </button>
+
+        </div>
+
+        <textarea
+            id="content_ar"
+            rows="6"
+            placeholder="الصق المحتوى العربي هنا"
+            dir="rtl"
+        ></textarea>
+
+    </div>
+
+
+    <button
+        id="saveBtn"
+        class="primary-btn"
+        onclick="save()"
+    >
+        💾 حفظ ونشر الدرس بلغتين
+    </button>
+
+    <button
+        id="cancelBtn"
+        class="cancel-btn"
+        onclick="cancelEdit()"
+    >
+        ❌ إلغاء التعديل
+    </button>
+
+
+    <button
+        class="export-btn"
+        onclick="exportJson()"
+    >
+        📤 تحميل lessons.json
+    </button>
+
+</div>
+
+
+<div class="card">
+
+    <h4>
+        📚 الدروس المنشورة
+    </h4>
+
+    <div id="list"></div>
+
+</div>
+
+
+<script>
+
+"use strict";
+
+
+/* =========================
+   عناصر الصفحة
+========================= */
+
+const moduleSelect = document.getElementById("module");
+
+const titleEn = document.getElementById("title_en");
+const titleAr = document.getElementById("title_ar");
+
+const contentEn = document.getElementById("content_en");
+const contentAr = document.getElementById("content_ar");
+
+const saveBtn = document.getElementById("saveBtn");
+const cancelBtn = document.getElementById("cancelBtn");
+
+const list = document.getElementById("list");
+const statusBox = document.getElementById("status");
+
+
+/* =========================
+   الحالة الحالية
+========================= */
+
+let curTab = "en";
+
+let editMi = -1;
+let editLi = -1;
+
+
+/* =========================
+   البيانات الافتراضية
+========================= */
+
+const defaultData = {
+    modules: [
+        {
+            id: "M01",
+            title: "Oral",
+            lessons: []
+        },
+        {
+            id: "M02",
+            title: "Written Expression",
+            lessons: []
+        },
+        {
+            id: "M03",
+            title: "Phonetics",
+            lessons: []
+        },
+        {
+            id: "M04",
+            title: "Culture Civilization",
+            lessons: []
+        },
+        {
+            id: "M05",
+            title: "Grammar",
+            lessons: []
+        },
+        {
+            id: "M06",
+            title: "Literary Text",
+            lessons: []
+        },
+        {
+            id: "M07",
+            title: "Linguistics",
+            lessons: []
+        },
+        {
+            id: "M08",
+            title: "Social Human Sciences",
+            lessons: []
+        },
+        {
+            id: "M09",
+            title: "University Techniques",
+            lessons: []
+        },
+        {
+            id: "M10",
+            title: "History of Algeria",
+            lessons: []
+        }
+    ]
+};
+
+
+/* =========================
+   تحميل البيانات بأمان
+========================= */
+
+function loadData(){
+
+    try{
+
+        const saved = localStorage.getItem("ufc_data");
+
+        if(!saved){
+            return structuredClone(defaultData);
+        }
+
+        const parsed = JSON.parse(saved);
+
+        if(
+            !parsed ||
+            !Array.isArray(parsed.modules)
+        ){
+            throw new Error("Invalid data structure");
+        }
+
+        parsed.modules.forEach(module => {
+
+            if(!Array.isArray(module.lessons)){
+                module.lessons = [];
+            }
+
+        });
+
+        return parsed;
+
+    }catch(error){
+
+        console.error("Data loading error:", error);
+
+        showStatus(
+            "تعذر قراءة البيانات القديمة. تم استخدام البيانات الافتراضية.",
+            "error"
+        );
+
+        return structuredClone(defaultData);
+    }
+}
+
+
+let data = loadData();
+
+
+/* =========================
+   حفظ البيانات
+========================= */
+
+function persistData(){
+
+    try{
+
+        localStorage.setItem(
+            "ufc_data",
+            JSON.stringify(data)
+        );
+
+        return true;
+
+    }catch(error){
+
+        console.error("Save error:", error);
+
+        showStatus(
+            "حدث خطأ أثناء حفظ البيانات.",
+            "error"
+        );
+
+        return false;
+    }
+}
+
+
+/* =========================
+   الرسائل
+========================= */
+
+function showStatus(message,type="info"){
+
+    statusBox.textContent = message;
+
+    statusBox.className =
+        "status " + type;
+
+    setTimeout(() => {
+
+        statusBox.className = "status";
+
+    },4000);
+}
+
+
+/* =========================
+   التبويبات
+========================= */
+
+function switchTab(tab){
+
+    curTab = tab;
+
+    document.getElementById("boxEN").style.display =
+        tab === "en" ? "block" : "none";
+
+    document.getElementById("boxAR").style.display =
+        tab === "ar" ? "block" : "none";
+
+    document
+        .getElementById("tabEN")
+        .classList.toggle(
+            "active",
+            tab === "en"
+        );
+
+    document
+        .getElementById("tabAR")
+        .classList.toggle(
+            "active",
+            tab === "ar"
+        );
+}
+
+
+/* =========================
+   حماية HTML
+========================= */
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+/* =========================
+   عرض الوحدات والدروس
+========================= */
+
+function render(){
+
+    moduleSelect.innerHTML = "";
+
+    data.modules.forEach((module,index) => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = index;
+
+        option.textContent =
+            `${module.id} - ${module.title}`;
+
+        moduleSelect.appendChild(option);
+
+    });
+
+
+    let html = "";
+
+    data.modules.forEach((module,mi) => {
+
+        if(!Array.isArray(module.lessons)){
+            module.lessons = [];
+        }
+
+        module.lessons.forEach((lesson,li) => {
+
+            const titleEn =
+                lesson.title_en ||
+                lesson.title ||
+                "";
+
+            const titleAr =
+                lesson.title_ar ||
+                "";
+
+            html += `
+
+                <div class="lesson">
+
+                    <div>
+                        <b>${escapeHTML(module.id)}</b>
+                    </div>
+
+                    <div class="lesson-title-en">
+                        ${escapeHTML(titleEn)}
+                    </div>
+
+                    ${
+                        titleAr
+                        ?
+                        `<div class="lesson-title-ar">
+                            ${escapeHTML(titleAr)}
+                        </div>`
+                        :
+                        ""
+                    }
+
+                    <div class="lesson-actions">
+
+                        <button
+                            class="btn"
+                            style="background:orange"
+                            onclick="editLesson(${mi},${li})"
+                        >
+                            ✏️ تعديل
+                        </button>
+
+                        <button
+                            class="btn"
+                            style="background:red"
+                            onclick="del(${mi},${li})"
+                        >
+                            🗑️ حذف
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+        });
+
+    });
+
+
+    list.innerHTML =
+        html ||
+        `<div class="empty">
+            لا توجد دروس منشورة حالياً.
+        </div>`;
+}
+
+
+/* =========================
+   لصق
+========================= */
+
+async function pasteTo(id){
+
+    const element =
+        document.getElementById(id);
+
+    try{
+
+        const text =
+            await navigator.clipboard.readText();
+
+        if(!text){
+            showStatus(
+                "الحافظة فارغة.",
+                "info"
+            );
+            return;
+        }
+
+        element.value += text;
+
+        element.focus();
+
+    }catch(error){
+
+        console.error(error);
+
+        showStatus(
+            "اضغط مطولاً داخل الخانة واختر «لصق».",
+            "info"
+        );
+    }
+}
+
+
+/* =========================
+   نسخ
+========================= */
+
+async function copyFrom(id){
+
+    const element =
+        document.getElementById(id);
+
+    if(!element.value.trim()){
+
+        showStatus(
+            "لا يوجد محتوى لنسخه.",
+            "info"
+        );
+
+        return;
+    }
+
+    try{
+
+        await navigator.clipboard.writeText(
+            element.value
+        );
+
+        showStatus(
+            "تم النسخ إلى الحافظة ✅",
+            "success"
+        );
+
+    }catch(error){
+
+        element.select();
+
+        showStatus(
+            "تعذر الوصول للحافظة. تم تحديد النص، يمكنك نسخه يدوياً.",
+            "info"
+        );
+    }
+}
+
+
+/* =========================
+   قص
+========================= */
+
+async function cutFrom(id){
+
+    const element =
+        document.getElementById(id);
+
+    if(!element.value.trim()){
+
+        showStatus(
+            "لا يوجد محتوى لقصه.",
+            "info"
+        );
+
+        return;
+    }
+
+    try{
+
+        await navigator.clipboard.writeText(
+            element.value
+        );
+
+        element.value = "";
+
+        showStatus(
+            "تم القص ✂️",
+            "success"
+        );
+
+    }catch(error){
+
+        element.select();
+
+        showStatus(
+            "تعذر الوصول للحافظة.",
+            "error"
+        );
+    }
+}
+
+
+/* =========================
+   تقسيم العنوان والمحتوى
+========================= */
+
+function autoSplit(language){
+
+    const content =
+        document.getElementById(
+            "content_" + language
+        );
+
+    const title =
+        document.getElementById(
+            "title_" + language
+        );
+
+    const lines =
+        content.value
+            .split(/\r?\n/)
+            .map(line => line.trim())
+            .filter(Boolean);
+
+
+    if(!lines.length){
+
+        showStatus(
+            "لا يوجد نص لتقسيمه.",
+            "info"
+        );
+
+        return;
+    }
+
+
+    if(!title.value.trim()){
+
+        title.value = lines[0];
+
+        content.value =
+            lines.slice(1).join("\n");
+
+    }else{
+
+        showStatus(
+            "العنوان موجود مسبقاً، لم يتم تغييره.",
+            "info"
+        );
+    }
+}
+
+
+/* =========================
+   قراءة Word
+========================= */
+
+async function readDocx(input){
+
+    const file =
+        input.files && input.files[0];
+
+    if(!file){
+        return;
+    }
+
+
+    if(
+        !file.name
+            .toLowerCase()
+            .endsWith(".docx")
+    ){
+
+        showStatus(
+            "يرجى اختيار ملف Word بصيغة DOCX.",
+            "error"
+        );
+
+        input.value = "";
+
+        return;
+    }
+
+
+    try{
+
+        showStatus(
+            "جاري قراءة ملف Word...",
+            "info"
+        );
+
+
+        const buffer =
+            await file.arrayBuffer();
+
+
+        const result =
+            await mammoth.extractRawText({
+                arrayBuffer:buffer
+            });
+
+
+        const text =
+            result.value
+      

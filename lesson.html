@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{margin:0;background:#e6efff;font-family:system-ui;padding:12px}
+.header{background:#1e4fd8;color:white;padding:14px;border-radius:14px;display:flex;align-items:center;gap:10px}
+.card{background:white;border-radius:16px;padding:14px;margin:10px 0;box-shadow:0 2px 8px #0001}
+.btn{background:#1e4fd8;color:white;padding:10px 14px;border-radius:10px;text-decoration:none;display:inline-block}
+.content{background:#f5f8ff;padding:12px;border-radius:10px;white-space:pre-wrap;margin-top:8px}
+</style></head><body>
+<div class="header"><a href="index.html" style="color:white;text-decoration:none">← رجوع</a><b id="title">الدرس</b></div>
+<div id="app"></div>
+<a href="admin.html" class="btn" style="margin-top:10px">+ إضافة درس لهذا المقياس</a>
+
+<script>
+const params = new URLSearchParams(location.search);
+const modId = params.get('id') || 'M02';
+let data = JSON.parse(localStorage.getItem('ufc_data')||'null');
+if(!data){document.getElementById('app').innerHTML='<p>لا يوجد دروس، اذهب لـ Admin</p>';}
+else{
+ const mod = data.modules.find(m=>m.id===modId);
+ document.getElementById('title').innerText = mod.id+' - '+mod.title;
+ if(!mod.lessons.length) document.getElementById('app').innerHTML='<div class="card">لا يوجد دروس بعد في هذا المقياس</div>';
+ else{
+  document.getElementById('app').innerHTML = mod.lessons.map(l=>`
+   <div class="card"><b>${l.title}</b><br><small>${mod.teacher||''}</small>
+   ${l.video?`<br><a href="${l.video}" target="_blank">🎥 مشاهدة الفيديو</a>`:''}
+   <div class="content">${l.content}</div>
+   </div>
+  `).join('');
+ }
+}
+</script></body></html>
